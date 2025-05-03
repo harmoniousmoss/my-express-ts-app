@@ -1,22 +1,27 @@
-// src/index.ts
+import dotenv from "dotenv";
+dotenv.config();
 
 import express, { Request, Response } from "express";
+import { connectToDatabase } from "./config/mongodb";
 
-// Create an Express application
 const app = express();
-
-// Middleware to parse JSON bodies (not strictly needed here, but useful later)
 app.use(express.json());
 
-// Define a GET handler for the root path
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
   res.send("Hello typescript with TS");
 });
 
-// Determine port (default 3000)
-const PORT = process.env.PORT ?? 3000;
+async function start() {
+  try {
+    await connectToDatabase(); // initialize MongoDB
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+      console.log(`🚀  Server listening on http://localhost:${port}`);
+    });
+  } catch (err) {
+    console.error("❌  Failed to start server", err);
+    process.exit(1);
+  }
+}
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
-});
+start();
