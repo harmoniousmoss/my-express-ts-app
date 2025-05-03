@@ -1,27 +1,23 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express, { Request, Response } from "express";
+import express from "express";
 import { connectToDatabase } from "./config/mongodb";
+import contactRoutes from "./routes/contactRoutes";
 
 const app = express();
 app.use(express.json());
-
-app.get("/", (_req: Request, res: Response) => {
-  res.send("Hello typescript with TS");
-});
+app.use("/api/v1/contacts", contactRoutes);
 
 async function start() {
-  try {
-    await connectToDatabase(); // initialize MongoDB
-    const port = process.env.PORT || 3000;
-    app.listen(port, () => {
-      console.log(`🚀  Server listening on http://localhost:${port}`);
-    });
-  } catch (err) {
-    console.error("❌  Failed to start server", err);
-    process.exit(1);
-  }
+  await connectToDatabase();
+  const port = process.env.PORT || 3000;
+  app.listen(port, () =>
+    console.log(`🚀  Server listening on http://localhost:${port}`)
+  );
 }
 
-start();
+start().catch((err) => {
+  console.error("❌  Server failed to start", err);
+  process.exit(1);
+});
