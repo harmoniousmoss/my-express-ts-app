@@ -16,9 +16,9 @@ export const createContact: RequestHandler = async (req, res, next) => {
 
   const createdAt = new Date();
   const updatedAt = createdAt;
-  const contacts = getCollection("contacts");
 
   try {
+    const contacts = getCollection("contacts");
     const result = await contacts.insertOne({
       fullName,
       emailAddress,
@@ -29,19 +29,16 @@ export const createContact: RequestHandler = async (req, res, next) => {
       updatedAt,
     });
 
-    // turn the ObjectId into a string:
     const id = result.insertedId.toHexString();
-
-    // build exactly the shape you want to return
     const responsePayload = {
       id,
       fullName,
       emailAddress,
       organization,
       phoneNumber,
-      message,
       createdAt,
       updatedAt,
+      message: "I've received your message and will get back to you shortly.",
     };
 
     console.log("[POST /api/v1/contacts] Response:", responsePayload);
