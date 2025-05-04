@@ -1,6 +1,10 @@
 import { Router } from "express";
-import { createContact } from "../controllers/contactController";
+import { postContactController } from "../controllers/contact/postContactController";
+import { getAllContactsController } from "../controllers/contact/getAllContactsController";
 
 const router = Router();
-router.post("/", createContact);
+
+router.post("/", postContactController);
+router.get("/", getAllContactsController);
+
 export default router;
